@@ -1,0 +1,9 @@
+server:
+  port: 6521
+
+spring:
+  profiles:
+    active: dev
+
+# tmdb:
+#   token: eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMWQwYmQyMDg4MmFkYzc1NjYxZmNkZDc5YjM0MGRkNiIsIm5iZiI6MTc0NDg4MjgzNC43NTQsInN1YiI6IjY4MDBjYzkyYWFjZjdjZmIyNjlhMTlmNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QD7vFp48otJCq7jgfOFHq1xYBtxOZXWpwGYlN1uS70A
