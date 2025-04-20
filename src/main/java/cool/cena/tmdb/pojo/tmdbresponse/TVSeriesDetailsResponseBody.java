@@ -643,7 +643,7 @@ public class TVSeriesDetailsResponseBody {
         @JsonProperty("poster_path")
         private String posterPath;
         @JsonProperty("season_number")
-        private String seasonNumber;
+        private int seasonNumber;
         @JsonProperty("vote_average")
         private double voteAverage;
 
@@ -695,11 +695,11 @@ public class TVSeriesDetailsResponseBody {
             this.posterPath = posterPath;
         }
 
-        public String getSeasonNumber() {
+        public int getSeasonNumber() {
             return seasonNumber;
         }
 
-        public void setSeasonNumber(String seasonNumber) {
+        public void setSeasonNumber(int seasonNumber) {
             this.seasonNumber = seasonNumber;
         }
 

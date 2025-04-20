@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import cool.cena.tmdb.helper.TMDbAPIAccessor;
 import cool.cena.tmdb.helper.TMDbConstraint;
@@ -89,7 +88,7 @@ public class TVSeriesService {
         if (filePath == null) {
             return;
         }
-        
+
         File imgFile = new File(TMDbConstraint.IMG_FILE_DIR + filePath);
         if (!imgFile.exists()) {
             String url = tmdbImgPath + filePath;
