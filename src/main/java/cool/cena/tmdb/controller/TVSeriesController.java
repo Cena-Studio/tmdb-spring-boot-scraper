@@ -20,9 +20,9 @@ public class TVSeriesController {
     @GetMapping
     public ResponseEntity<TVSeriesResponseBody> getTVSeriesInfo(String title, int year, int season, int episode) {
 
-        tvSeriesService.getTvSeriesInfo(title, year, season, episode);
+        TVSeriesServiceDTO tvSeriesServiceDTO = tvSeriesService.getTvSeriesInfo(title, year, season, episode);
 
-        return ResponseEntity.ok(new TVSeriesResponseBody());
+        return ResponseEntity.ok(new TVSeriesResponseBody(tvSeriesServiceDTO));
 
     }
     

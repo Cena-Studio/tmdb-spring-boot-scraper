@@ -28,7 +28,7 @@ public class TVSeriesServiceDTO {
     private List<String> genres = new ArrayList<>();
     private List<String> productionCountries = new ArrayList<>();
     private List<String> directors = new ArrayList<>();
-    private List<TVSeriesServiceDTOProductionCompany> productionCompanies;
+    private List<TVSeriesServiceDTOProductionCompany> productionCompanies = new ArrayList<>();
     private List<String> writers = new ArrayList<>();
     private List<TVSeriesServiceDTOActor> cast = new ArrayList<>();
     private List<TVSeriesServiceDTOSeason> seasons = new ArrayList<>();
