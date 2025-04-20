@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 
 public class TMDbConstraint {
     
+    public static final String FILE_DIR = Paths.get("files").toAbsolutePath().toString();
     public static final String IMG_FILE_DIR = Paths.get("files", "images").toAbsolutePath().toString();
     public static final String IMG_FILE_PATH = "/files/images";
     public static final String TMDB_BACKDROP_IMG_PATH = "https://image.tmdb.org/t/p/w1280";

@@ -1,30 +1,16 @@
 package cool.cena.tmdb.helper;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody;
@@ -32,14 +18,39 @@ import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody.SearchTVSerie
 
 public class TMDbAPIAccessor {
     
-    private static final HttpHeaders HTTP_JSON_HEADERS = new HttpHeaders();
+    private static final String accessToken = getAccessToken();
+    private static final HttpHeaders HTTP_JSON_HEADERS = initHTTPJSONHeaders();
     private static final RestTemplate restTemplate = new RestTemplate();
-    private static final String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMWQwYmQyMDg4MmFkYzc1NjYxZmNkZDc5YjM0MGRkNiIsIm5iZiI6MTc0NDg4MjgzNC43NTQsInN1YiI6IjY4MDBjYzkyYWFjZjdjZmIyNjlhMTlmNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QD7vFp48otJCq7jgfOFHq1xYBtxOZXWpwGYlN1uS70A";
     // private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    static {
+    private static String getAccessToken() {
+        try (
+            FileReader fr = new FileReader(TMDbConstraint.FILE_DIR + "/config.csv");
+            Scanner fs = new Scanner(fr)
+        ) {
+            while (fs.hasNextLine()) {
+                String[] lineElements = fs.nextLine().split(",", -1);
+                if (lineElements[0].equals("accessToken")) {
+                    System.out.println("access token fetched: " + lineElements[1]);
+                    return lineElements[1];
+                }
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static HttpHeaders initHTTPJSONHeaders() {
+        HttpHeaders HTTP_JSON_HEADERS = new HttpHeaders();
         HTTP_JSON_HEADERS.set("accept", "application/json");
         HTTP_JSON_HEADERS.set("Authorization", "Bearer " + accessToken);
+        return HTTP_JSON_HEADERS;
     }
 
     public static TVSeriesDetailsResponseBody requestTVSeries(String title, int year, int season, int episode) {
