@@ -12,8 +12,8 @@ public class TMDbMVCConfig implements WebMvcConfigurer{
     
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(TMDbConstraint.imgFilePath + "/*.jpg")
-                .addResourceLocations("file:" + TMDbConstraint.imgFileDir)
+        registry.addResourceHandler(TMDbConstraint.IMG_FILE_PATH + "/*.jpg")
+                .addResourceLocations("file:" + TMDbConstraint.IMG_FILE_DIR)
                 .setCachePeriod(3600);
     }
 

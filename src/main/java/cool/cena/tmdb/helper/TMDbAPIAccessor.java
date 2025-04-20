@@ -1,5 +1,10 @@
 package cool.cena.tmdb.helper;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +88,11 @@ public class TMDbAPIAccessor {
             requestEntity,
             TVSeriesDetailsResponseBody.class
         );
+        return responseEntity.getBody();
+    }
+
+    public static byte[] downloadFileAsBytes(String url) {
+        ResponseEntity<byte[]> responseEntity =  restTemplate.getForEntity(url, byte[].class);
         return responseEntity.getBody();
     }
 

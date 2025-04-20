@@ -13,7 +13,7 @@ public class TVSeriesDetailsResponseBody {
     private List<String> languages;
     private List<TVSeriesDetailsResponseBodyGenre> genres;
     private List<TVSeriesDetailsResponseBodyNetwork> networks;
-    private List<TVSeriesDetailsResponseBodyProductionSeason> seasons;
+    private List<TVSeriesDetailsResponseBodySeason> seasons;
     @JsonProperty("backdrop_path")
     private String backdropPath;
     @JsonProperty("created_by")
@@ -152,11 +152,11 @@ public class TVSeriesDetailsResponseBody {
         this.networks = networks;
     }
 
-    public List<TVSeriesDetailsResponseBodyProductionSeason> getSeasons() {
+    public List<TVSeriesDetailsResponseBodySeason> getSeasons() {
         return seasons;
     }
 
-    public void setSeasons(List<TVSeriesDetailsResponseBodyProductionSeason> seasons) {
+    public void setSeasons(List<TVSeriesDetailsResponseBodySeason> seasons) {
         this.seasons = seasons;
     }
 
@@ -632,7 +632,7 @@ public class TVSeriesDetailsResponseBody {
 
     }
 
-    public static class TVSeriesDetailsResponseBodyProductionSeason {
+    public static class TVSeriesDetailsResponseBodySeason {
 
         private long id;
         private String name, overview;
@@ -791,25 +791,25 @@ public class TVSeriesDetailsResponseBody {
 
     public static class TVSeriesDetailsResponseBodyCredit {
 
-        private List<TVSeriesDetailsResponseBodyCreditCast> cast;
-        private List<TVSeriesDetailsResponseBodyCreditCrew> crew;
+        private List<TVSeriesDetailsResponseBodyCreditActor> cast;
+        private List<TVSeriesDetailsResponseBodyCreditWorker> crew;
 
-        public List<TVSeriesDetailsResponseBodyCreditCast> getCast() {
+        public List<TVSeriesDetailsResponseBodyCreditActor> getCast() {
             return cast;
         }
-        public void setCast(List<TVSeriesDetailsResponseBodyCreditCast> cast) {
+        public void setCast(List<TVSeriesDetailsResponseBodyCreditActor> cast) {
             this.cast = cast;
         }
-        public List<TVSeriesDetailsResponseBodyCreditCrew> getCrew() {
+        public List<TVSeriesDetailsResponseBodyCreditWorker> getCrew() {
             return crew;
         }
-        public void setCrew(List<TVSeriesDetailsResponseBodyCreditCrew> crew) {
+        public void setCrew(List<TVSeriesDetailsResponseBodyCreditWorker> crew) {
             this.crew = crew;
         }
     
     }
 
-    public static class TVSeriesDetailsResponseBodyCreditCast {
+    public static class TVSeriesDetailsResponseBodyCreditActor {
 
         private boolean adult;
         private int gender, order;
@@ -895,7 +895,7 @@ public class TVSeriesDetailsResponseBody {
         
     }
 
-    public static class TVSeriesDetailsResponseBodyCreditCrew {
+    public static class TVSeriesDetailsResponseBodyCreditWorker {
 
         private boolean adult;
         private int gender, order;
