@@ -78,7 +78,7 @@ public class TVSeriesServiceDTO {
             productionCompanies.add(new TVSeriesServiceDTOProductionCompany(company.getName(), companyLogoPath));
         }
         for (TVSeriesDetailsResponseBodyCreditActor actor : tvSeriesDetailsResponseBody.getCredits().getCast()) {
-            String actorProfilePath = actor.getProfilePath() == null ? TMDbConstraint.DEFAULT_PROFILE_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + actor.getProfilePath();
+            String actorProfilePath = actor.getProfilePath() == null ? getDefaultActorProfilePath(actor.getGender()) : TMDbConstraint.IMG_FILE_PATH + actor.getProfilePath();
             cast.add(new TVSeriesServiceDTOActor(actor.getName(), actor.getCharacter(), actorProfilePath, actor.getOrder()));
         }
         for (TVSeriesDetailsResponseBodySeason season : tvSeriesDetailsResponseBody.getSeasons()) {
@@ -96,6 +96,13 @@ public class TVSeriesServiceDTO {
             }
         }
         return "G";
+    }
+
+    private String getDefaultActorProfilePath(int gender) {
+        if (gender == 1) {
+            return TMDbConstraint.DEFAULT_FEMALE_PROFILE_IMG_FILE_PATH;
+        }
+        return TMDbConstraint.DEFAULT_MALE_PROFILE_IMG_FILE_PATH;
     }
 
     public TVSeriesServiceDTO(
