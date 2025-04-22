@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cool.cena.tmdb.helper.TMDbConstraint;
+import cool.cena.tmdb.pojo.tmdbresponse.EpisodeDetailsResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyContentRatingResult;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditActor;
@@ -30,28 +31,32 @@ public class TvSeriesServiceDTO {
     private List<String> directors = new ArrayList<>();
     private List<TVSeriesServiceDTOProductionCompany> productionCompanies = new ArrayList<>();
     private List<String> writers = new ArrayList<>();
-    private List<TVSeriesServiceDTOActor> cast = new ArrayList<>();
-    private List<TVSeriesServiceDTOSeason> seasons = new ArrayList<>();
+    private List<TvSeriesServiceDTOActor> cast = new ArrayList<>();
+    private List<TvSeriesServiceDTOSeason> seasons = new ArrayList<>();
     private String backdropPath;
     private String posterPath;
+    private List<TvSeriesServiceDTOEpisode> episodes = new ArrayList<>();
 
-    public TvSeriesServiceDTO(TvSeriesDetailsResponseBody tvSeriesDetailsResponseBody) {
-        this.id = tvSeriesDetailsResponseBody.getId();
-        this.firstAirDate = tvSeriesDetailsResponseBody.getFirstAirDate();
-        this.voteAverage = tvSeriesDetailsResponseBody.getVoteAverage();
-        this.voteCount = tvSeriesDetailsResponseBody.getVoteCount();
-        this.contentRating = getContentRating(tvSeriesDetailsResponseBody.getContentRatings().getResults());
-        this.overview = tvSeriesDetailsResponseBody.getOverview();
-        this.name = tvSeriesDetailsResponseBody.getName();
-        this.originalName = tvSeriesDetailsResponseBody.getOriginalName();
-        this.tagline = tvSeriesDetailsResponseBody.getTagline();
-        for (TVSeriesDetailsResponseBodyGenre genre : tvSeriesDetailsResponseBody.getGenres()) {
+    public TvSeriesServiceDTO(
+        TvSeriesDetailsResponseBody tvSeries,
+        List<EpisodeDetailsResponseBody> episodes 
+    ) {
+        this.id = tvSeries.getId();
+        this.firstAirDate = tvSeries.getFirstAirDate();
+        this.voteAverage = tvSeries.getVoteAverage();
+        this.voteCount = tvSeries.getVoteCount();
+        this.contentRating = getContentRating(tvSeries.getContentRatings().getResults());
+        this.overview = tvSeries.getOverview();
+        this.name = tvSeries.getName();
+        this.originalName = tvSeries.getOriginalName();
+        this.tagline = tvSeries.getTagline();
+        for (TVSeriesDetailsResponseBodyGenre genre : tvSeries.getGenres()) {
             this.genres.add(genre.getName());
         }
-        for (TVSeriesDetailsResponseBodyProductionCountry country : tvSeriesDetailsResponseBody.getProductionCountries()) {
+        for (TVSeriesDetailsResponseBodyProductionCountry country : tvSeries.getProductionCountries()) {
             this.productionCountries.add(country.getIso31661());
         }
-        for (TVSeriesDetailsResponseBodyCreditWorker worker : tvSeriesDetailsResponseBody.getCredits().getCrew()) {
+        for (TVSeriesDetailsResponseBodyCreditWorker worker : tvSeries.getCredits().getCrew()) {
             String job = worker.getJob().toLowerCase();
             if (job.contains("director")) {
                 this.directors.add(worker.getName());
@@ -59,34 +64,37 @@ public class TvSeriesServiceDTO {
                 this.writers.add(worker.getName());
             }
         }
-        if (directors.size() == 0) {
+        if (this.directors.size() == 0) {
             try {
-                directors.add(tvSeriesDetailsResponseBody.getCreatedBy().get(0).getName());
+                this.directors.add(tvSeries.getCreatedBy().get(0).getName());
             } catch (IndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
         }
-        if (writers.size() == 0) {
+        if (this.writers.size() == 0) {
             try {
-                writers.add(tvSeriesDetailsResponseBody.getCreatedBy().get(0).getName());
+                this.writers.add(tvSeries.getCreatedBy().get(0).getName());
             } catch (IndexOutOfBoundsException e) {
                 e.printStackTrace();
             }
         }
-        for (TVSeriesDetailsResponseBodyProductionCompany company : tvSeriesDetailsResponseBody.getProductionCompanies()) {
+        for (TVSeriesDetailsResponseBodyProductionCompany company : tvSeries.getProductionCompanies()) {
             String companyLogoPath = company.getLogoPath() == null ? TMDbConstraint.DEFAULT_LOGO_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + company.getLogoPath();
-            productionCompanies.add(new TVSeriesServiceDTOProductionCompany(company.getName(), companyLogoPath));
+            this.productionCompanies.add(new TVSeriesServiceDTOProductionCompany(company.getName(), companyLogoPath));
         }
-        for (TVSeriesDetailsResponseBodyCreditActor actor : tvSeriesDetailsResponseBody.getCredits().getCast()) {
+        for (TVSeriesDetailsResponseBodyCreditActor actor : tvSeries.getCredits().getCast()) {
             String actorProfilePath = actor.getProfilePath() == null ? getDefaultActorProfilePath(actor.getGender()) : TMDbConstraint.IMG_FILE_PATH + actor.getProfilePath();
-            cast.add(new TVSeriesServiceDTOActor(actor.getName(), actor.getCharacter(), actorProfilePath, actor.getOrder()));
+            this.cast.add(new TvSeriesServiceDTOActor(actor.getName(), actor.getCharacter(), actorProfilePath, actor.getOrder()));
         }
-        for (TVSeriesDetailsResponseBodySeason season : tvSeriesDetailsResponseBody.getSeasons()) {
+        for (TVSeriesDetailsResponseBodySeason season : tvSeries.getSeasons()) {
             String seasonPosterPath = season.getPosterPath() == null ? TMDbConstraint.DEFAULT_POSTER_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + season.getPosterPath();
-            seasons.add(new TVSeriesServiceDTOSeason(season.getSeasonNumber(), season.getName(), seasonPosterPath));
+            this.seasons.add(new TvSeriesServiceDTOSeason(season.getSeasonNumber(), season.getName(), seasonPosterPath));
         }
-        this.backdropPath = tvSeriesDetailsResponseBody.getBackdropPath() == null ? TMDbConstraint.DEFAULT_BACKDROP_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + tvSeriesDetailsResponseBody.getBackdropPath();
-        this.posterPath = tvSeriesDetailsResponseBody.getPosterPath() == null ? TMDbConstraint.DEFAULT_POSTER_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + tvSeriesDetailsResponseBody.getPosterPath();
+        this.backdropPath = tvSeries.getBackdropPath() == null ? TMDbConstraint.DEFAULT_BACKDROP_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + tvSeries.getBackdropPath();
+        this.posterPath = tvSeries.getPosterPath() == null ? TMDbConstraint.DEFAULT_POSTER_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + tvSeries.getPosterPath();
+        for (EpisodeDetailsResponseBody episode : episodes) {
+            this.episodes.add(new TvSeriesServiceDTOEpisode(episode.getSeasonNumber(), episode.getEpisodeNumber(), episode.getAirDate()));
+        }
     }
 
     private String getContentRating(List<TVSeriesDetailsResponseBodyContentRatingResult> contentRatingResults) {
@@ -109,8 +117,8 @@ public class TvSeriesServiceDTO {
         long uniqueID, String firstAirDate, double voteAverage, int voteCount, String contentRating,
         String overview, String name, String originalName, String tagline, String status,
         List<String> genres, List<String> productionCountries, List<String> directors,
-        List<TVSeriesServiceDTOProductionCompany> productionCompanies, List<String> writers, List<TVSeriesServiceDTOActor> cast,
-        List<TVSeriesServiceDTOSeason> seasons
+        List<TVSeriesServiceDTOProductionCompany> productionCompanies, List<String> writers, List<TvSeriesServiceDTOActor> cast,
+        List<TvSeriesServiceDTOSeason> seasons
     ) {
         this.id = uniqueID;
         this.firstAirDate = firstAirDate;
@@ -191,11 +199,11 @@ public class TvSeriesServiceDTO {
         return writers;
     }
 
-    public List<TVSeriesServiceDTOActor> getCast() {
+    public List<TvSeriesServiceDTOActor> getCast() {
         return cast;
     }
 
-    public List<TVSeriesServiceDTOSeason> getSeasons() {
+    public List<TvSeriesServiceDTOSeason> getSeasons() {
         return seasons;
     }
 
@@ -205,6 +213,10 @@ public class TvSeriesServiceDTO {
 
     public String getPosterPath() {
         return posterPath;
+    }
+
+    public List<TvSeriesServiceDTOEpisode> getEpisodes() {
+        return episodes;
     }
 
     public static class TVSeriesServiceDTOProductionCompany {
@@ -226,12 +238,12 @@ public class TvSeriesServiceDTO {
 
     }
 
-    public static class TVSeriesServiceDTOActor {
+    public static class TvSeriesServiceDTOActor {
 
         private String name, character, profilePath;
         private int order;
 
-        public TVSeriesServiceDTOActor(String name, String character, String profilePath, int order) {
+        public TvSeriesServiceDTOActor(String name, String character, String profilePath, int order) {
             this.name = name;
             this.character = character;
             this.profilePath = profilePath;
@@ -256,12 +268,12 @@ public class TvSeriesServiceDTO {
 
     }
 
-    public static class TVSeriesServiceDTOSeason {
+    public static class TvSeriesServiceDTOSeason {
 
         private int seasonNumber;
         private String name, posterPath;
 
-        public TVSeriesServiceDTOSeason(int seasonNumber, String name, String posterPath) {
+        public TvSeriesServiceDTOSeason(int seasonNumber, String name, String posterPath) {
             this.seasonNumber = seasonNumber;
             this.name = name;
             this.posterPath = posterPath;
@@ -277,6 +289,31 @@ public class TvSeriesServiceDTO {
 
         public String getPosterPath() {
             return posterPath;
+        }
+
+    }
+
+    public static class TvSeriesServiceDTOEpisode {
+
+        private int seasonNumber, episodeNumber;
+        private String airDate;
+
+        public TvSeriesServiceDTOEpisode(int seasonNumber, int episodeNumber, String airDate) {
+            this.seasonNumber = seasonNumber;
+            this.episodeNumber = episodeNumber;
+            this.airDate = airDate;
+        }
+
+        public int getSeasonNumber() {
+            return seasonNumber;
+        }
+
+        public int getEpisodeNumber() {
+            return episodeNumber;
+        }
+
+        public String getAirDate() {
+            return airDate;
         }
 
     }

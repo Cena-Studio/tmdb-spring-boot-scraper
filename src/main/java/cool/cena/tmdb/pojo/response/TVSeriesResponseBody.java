@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO;
-import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TVSeriesServiceDTOActor;
+import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TvSeriesServiceDTOActor;
+import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TvSeriesServiceDTOEpisode;
 import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TVSeriesServiceDTOProductionCompany;
-import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TVSeriesServiceDTOSeason;
+import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TvSeriesServiceDTOSeason;
 
 public class TVSeriesResponseBody {
 
@@ -23,49 +24,53 @@ public class TVSeriesResponseBody {
     private List<String> genres;
     private List<String> productionCountries;
     private List<String> directors;
-    private List<TVSeriesResponseBodyProductionCompany> productionCompanies = new ArrayList<>();
+    private List<TvSeriesResponseBodyProductionCompany> productionCompanies = new ArrayList<>();
     private List<String> writers;
-    private List<TVSeriesResponseBodyActor> cast = new ArrayList<>();
-    private List<TVSeriesResponseBodySeason> seasons = new ArrayList<>();
+    private List<TvSeriesResponseBodyActor> cast = new ArrayList<>();
+    private List<TvSeriesResponseBodySeason> seasons = new ArrayList<>();
     private String backdropPath;
     private String posterPath;
+    private List<TvSeriesResponseBodyEpisode> episodes = new ArrayList<>();
 
-    public TVSeriesResponseBody(TvSeriesServiceDTO tvSeriesServiceDTO) {
-        this.id = tvSeriesServiceDTO.getId();
-        this.firstAirDate = tvSeriesServiceDTO.getFirstAirDate();
-        this.voteAverage = tvSeriesServiceDTO.getVoteAverage();
-        this.voteCount = tvSeriesServiceDTO.getVoteCount();
-        this.contentRating = tvSeriesServiceDTO.getContentRating();
-        this.overview = tvSeriesServiceDTO.getOverview();
-        this.name = tvSeriesServiceDTO.getName();
-        this.originalName = tvSeriesServiceDTO.getOriginalName();
-        this.tagline = tvSeriesServiceDTO.getTagline();
-        this.status = tvSeriesServiceDTO.getStatus();
-        this.genres = tvSeriesServiceDTO.getGenres();
-        this.productionCountries = tvSeriesServiceDTO.getProductionCountries();
-        this.directors = tvSeriesServiceDTO.getDirectors();
-        this.writers = tvSeriesServiceDTO.getWriters();
-        for (TVSeriesServiceDTOProductionCompany company : tvSeriesServiceDTO.getProductionCompanies()) {
+    public TVSeriesResponseBody(TvSeriesServiceDTO tvSeries) {
+        this.id = tvSeries.getId();
+        this.firstAirDate = tvSeries.getFirstAirDate();
+        this.voteAverage = tvSeries.getVoteAverage();
+        this.voteCount = tvSeries.getVoteCount();
+        this.contentRating = tvSeries.getContentRating();
+        this.overview = tvSeries.getOverview();
+        this.name = tvSeries.getName();
+        this.originalName = tvSeries.getOriginalName();
+        this.tagline = tvSeries.getTagline();
+        this.status = tvSeries.getStatus();
+        this.genres = tvSeries.getGenres();
+        this.productionCountries = tvSeries.getProductionCountries();
+        this.directors = tvSeries.getDirectors();
+        this.writers = tvSeries.getWriters();
+        for (TVSeriesServiceDTOProductionCompany company : tvSeries.getProductionCompanies()) {
             this.productionCompanies
-                    .add(new TVSeriesResponseBodyProductionCompany(company.getName(), company.getLogoPath()));
+                    .add(new TvSeriesResponseBodyProductionCompany(company.getName(), company.getLogoPath()));
         }
-        for (TVSeriesServiceDTOActor actor : tvSeriesServiceDTO.getCast()) {
-            this.cast.add(new TVSeriesResponseBodyActor(actor.getName(), actor.getCharacter(), actor.getProfilePath(),
+        for (TvSeriesServiceDTOActor actor : tvSeries.getCast()) {
+            this.cast.add(new TvSeriesResponseBodyActor(actor.getName(), actor.getCharacter(), actor.getProfilePath(),
                     actor.getOrder()));
         }
-        for (TVSeriesServiceDTOSeason season : tvSeriesServiceDTO.getSeasons()) {
+        for (TvSeriesServiceDTOSeason season : tvSeries.getSeasons()) {
             this.seasons.add(
-                    new TVSeriesResponseBodySeason(season.getSeasonNumber(), season.getName(), season.getPosterPath()));
+                    new TvSeriesResponseBodySeason(season.getSeasonNumber(), season.getName(), season.getPosterPath()));
         }
-        this.backdropPath = tvSeriesServiceDTO.getBackdropPath();
-        this.posterPath = tvSeriesServiceDTO.getPosterPath();
+        this.backdropPath = tvSeries.getBackdropPath();
+        this.posterPath = tvSeries.getPosterPath();
+        for (TvSeriesServiceDTOEpisode episode : tvSeries.getEpisodes()) {
+            this.episodes.add(new TvSeriesResponseBodyEpisode(episode.getSeasonNumber(), episode.getEpisodeNumber(), episode.getAirDate()));
+        }
     }
 
     public TVSeriesResponseBody(long id, String firstAirDate, double voteAverage, int voteCount, String contentRating,
             String overview, String name, String originalName, String tagline, String status, List<String> genres,
             List<String> productionCountries, List<String> directors,
-            List<TVSeriesResponseBodyProductionCompany> productionCompanies, List<String> writers,
-            List<TVSeriesResponseBodyActor> cast, List<TVSeriesResponseBodySeason> seasons, String backdropPath,
+            List<TvSeriesResponseBodyProductionCompany> productionCompanies, List<String> writers,
+            List<TvSeriesResponseBodyActor> cast, List<TvSeriesResponseBodySeason> seasons, String backdropPath,
             String posterPath) {
         this.id = id;
         this.firstAirDate = firstAirDate;
@@ -192,11 +197,11 @@ public class TVSeriesResponseBody {
         this.directors = directors;
     }
 
-    public List<TVSeriesResponseBodyProductionCompany> getProductionCompanies() {
+    public List<TvSeriesResponseBodyProductionCompany> getProductionCompanies() {
         return productionCompanies;
     }
 
-    public void setProductionCompanies(List<TVSeriesResponseBodyProductionCompany> productionCompanies) {
+    public void setProductionCompanies(List<TvSeriesResponseBodyProductionCompany> productionCompanies) {
         this.productionCompanies = productionCompanies;
     }
 
@@ -208,19 +213,19 @@ public class TVSeriesResponseBody {
         this.writers = writers;
     }
 
-    public List<TVSeriesResponseBodyActor> getCast() {
+    public List<TvSeriesResponseBodyActor> getCast() {
         return cast;
     }
 
-    public void setCast(List<TVSeriesResponseBodyActor> cast) {
+    public void setCast(List<TvSeriesResponseBodyActor> cast) {
         this.cast = cast;
     }
 
-    public List<TVSeriesResponseBodySeason> getSeasons() {
+    public List<TvSeriesResponseBodySeason> getSeasons() {
         return seasons;
     }
 
-    public void setSeasons(List<TVSeriesResponseBodySeason> seasons) {
+    public void setSeasons(List<TvSeriesResponseBodySeason> seasons) {
         this.seasons = seasons;
     }
 
@@ -240,11 +245,19 @@ public class TVSeriesResponseBody {
         this.posterPath = posterPath;
     }
 
-    public static class TVSeriesResponseBodyProductionCompany {
+    public List<TvSeriesResponseBodyEpisode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<TvSeriesResponseBodyEpisode> episodes) {
+        this.episodes = episodes;
+    }
+
+    public static class TvSeriesResponseBodyProductionCompany {
 
         private String name, logoPath;
 
-        public TVSeriesResponseBodyProductionCompany(String name, String logoPath) {
+        public TvSeriesResponseBodyProductionCompany(String name, String logoPath) {
             this.name = name;
             this.logoPath = logoPath;
         }
@@ -267,12 +280,12 @@ public class TVSeriesResponseBody {
 
     }
 
-    public static class TVSeriesResponseBodyActor {
+    public static class TvSeriesResponseBodyActor {
 
         private String name, character, profilePath;
         private int order;
 
-        public TVSeriesResponseBodyActor(String name, String character, String profilePath, int order) {
+        public TvSeriesResponseBodyActor(String name, String character, String profilePath, int order) {
             this.name = name;
             this.character = character;
             this.profilePath = profilePath;
@@ -313,12 +326,12 @@ public class TVSeriesResponseBody {
 
     }
 
-    public static class TVSeriesResponseBodySeason {
+    public static class TvSeriesResponseBodySeason {
 
         private int seasonNumber;
         private String name, posterPath;
 
-        public TVSeriesResponseBodySeason(int seasonNumber, String name, String posterPath) {
+        public TvSeriesResponseBodySeason(int seasonNumber, String name, String posterPath) {
             this.seasonNumber = seasonNumber;
             this.name = name;
             this.posterPath = posterPath;
@@ -346,6 +359,43 @@ public class TVSeriesResponseBody {
 
         public void setPosterPath(String posterPath) {
             this.posterPath = posterPath;
+        }
+
+    }
+
+    public static class TvSeriesResponseBodyEpisode {
+
+        private int seasonNumber, episodeNumber;
+        private String airDate;
+
+        public TvSeriesResponseBodyEpisode(int seasonNumber, int episodeNumber, String airDate) {
+            this.seasonNumber = seasonNumber;
+            this.episodeNumber = episodeNumber;
+            this.airDate = airDate;
+        }
+
+        public int getSeasonNumber() {
+            return seasonNumber;
+        }
+
+        public void setSeasonNumber(int seasonNumber) {
+            this.seasonNumber = seasonNumber;
+        }
+
+        public int getEpisodeNumber() {
+            return episodeNumber;
+        }
+
+        public void setEpisodeNumber(int episodeNumber) {
+            this.episodeNumber = episodeNumber;
+        }
+
+        public String getAirDate() {
+            return airDate;
+        }
+
+        public void setAirDate(String airDate) {
+            this.airDate = airDate;
         }
 
     }

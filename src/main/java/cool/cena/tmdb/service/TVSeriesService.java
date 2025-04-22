@@ -3,12 +3,15 @@ package cool.cena.tmdb.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import cool.cena.tmdb.helper.TMDbAPIAccessor;
 import cool.cena.tmdb.helper.TMDbConstraint;
 import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO;
+import cool.cena.tmdb.pojo.tmdbresponse.EpisodeDetailsResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody.SearchTVSeriesResponseBodyResult;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody;
@@ -25,29 +28,36 @@ public class TvSeriesService {
 
     public TvSeriesServiceDTO getTvSeriesInfo(String title, int year, int seasonSize, int episodeSize) {
 
-        SearchTVSeriesResponseBody searchTVSeriesResponseBody = TMDbAPIAccessor.searchTVSeries(title, year);
-        if (searchTVSeriesResponseBody != null) {
-            for (SearchTVSeriesResponseBodyResult result : searchTVSeriesResponseBody.getResults()) {
-                TvSeriesDetailsResponseBody tvSeriesDetailsResponseBody = TMDbAPIAccessor.getTvSeriesDetails(result.getId());
+        SearchTVSeriesResponseBody searchResults = TMDbAPIAccessor.searchTVSeries(title, year);
+        if (searchResults != null) {
+            for (SearchTVSeriesResponseBodyResult searchResult : searchResults.getResults()) {
+                TvSeriesDetailsResponseBody tvSeries = TMDbAPIAccessor.getTvSeriesDetails(searchResult.getId());
                 if (
-                    tvSeriesDetailsResponseBody.getNumberOfSeasons() == seasonSize &&
-                    tvSeriesDetailsResponseBody.getNumberOfEpisodes() == episodeSize
+                    tvSeries.getNumberOfSeasons() == seasonSize &&
+                    tvSeries.getNumberOfEpisodes() == episodeSize
                 ) {
-                    this.downloadBackdropImgFile(tvSeriesDetailsResponseBody.getBackdropPath());
-                    this.downloadPosterImgFile(tvSeriesDetailsResponseBody.getPosterPath());
-                    for (TVSeriesDetailsResponseBodyCreator creator : tvSeriesDetailsResponseBody.getCreatedBy()) {
+                    this.downloadBackdropImgFile(tvSeries.getBackdropPath());
+                    this.downloadPosterImgFile(tvSeries.getPosterPath());
+                    for (TVSeriesDetailsResponseBodyCreator creator : tvSeries.getCreatedBy()) {
                         this.downloadProfileImgFile(creator.getProfilePath());
                     }
-                    for (TVSeriesDetailsResponseBodyNetwork network : tvSeriesDetailsResponseBody.getNetworks()) {
+                    for (TVSeriesDetailsResponseBodyNetwork network : tvSeries.getNetworks()) {
                         this.downloadLogoImgFile(network.getLogoPath());
                     }
-                    for (TVSeriesDetailsResponseBodyProductionCompany company : tvSeriesDetailsResponseBody.getProductionCompanies()) {
+                    for (TVSeriesDetailsResponseBodyProductionCompany company : tvSeries.getProductionCompanies()) {
                         this.downloadLogoImgFile(company.getLogoPath());
                     }
-                    for (TVSeriesDetailsResponseBodySeason season : tvSeriesDetailsResponseBody.getSeasons()) {
+                    List<EpisodeDetailsResponseBody> episodes = new ArrayList<>();
+                    long tvSeriesId = tvSeries.getId();
+                    for (TVSeriesDetailsResponseBodySeason season : tvSeries.getSeasons()) {
                         this.downloadPosterImgFile(season.getPosterPath());
+
+                        for (int i = 1; i <= season.getEpisodeCount(); i++) {
+                            EpisodeDetailsResponseBody episode = TMDbAPIAccessor.getEpisodeDetails(tvSeriesId, season.getSeasonNumber(), i);
+                            episodes.add(episode);
+                        }
                     }
-                    TVSeriesDetailsResponseBodyCredit credit = tvSeriesDetailsResponseBody.getCredits();
+                    TVSeriesDetailsResponseBodyCredit credit = tvSeries.getCredits();
                     for (TVSeriesDetailsResponseBodyCreditActor actor : credit.getCast()) {
                         this.downloadProfileImgFile(actor.getProfilePath());
                     }
@@ -55,7 +65,7 @@ public class TvSeriesService {
                         this.downloadProfileImgFile(worker.getProfilePath());
                     }
 
-                    return new TvSeriesServiceDTO(tvSeriesDetailsResponseBody);           
+                    return new TvSeriesServiceDTO(tvSeries, episodes);           
                 }
             }
         }

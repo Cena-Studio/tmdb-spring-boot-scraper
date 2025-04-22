@@ -639,7 +639,7 @@ public class TvSeriesDetailsResponseBody {
         @JsonProperty("air_date")
         private String airDate;
         @JsonProperty("episode_count")
-        private String episodeCount;
+        private int episodeCount;
         @JsonProperty("poster_path")
         private String posterPath;
         @JsonProperty("season_number")
@@ -679,11 +679,11 @@ public class TvSeriesDetailsResponseBody {
             this.airDate = airDate;
         }
 
-        public String getEpisodeCount() {
+        public int getEpisodeCount() {
             return episodeCount;
         }
 
-        public void setEpisodeCount(String episodeCount) {
+        public void setEpisodeCount(int episodeCount) {
             this.episodeCount = episodeCount;
         }
 
