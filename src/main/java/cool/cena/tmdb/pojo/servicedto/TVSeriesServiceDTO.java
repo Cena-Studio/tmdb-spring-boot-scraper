@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cool.cena.tmdb.helper.TMDbConstraint;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyContentRatingResult;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditActor;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditWorker;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyGenre;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyProductionCompany;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyProductionCountry;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodySeason;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyContentRatingResult;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditActor;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditWorker;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyGenre;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyProductionCompany;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyProductionCountry;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodySeason;
 
-public class TVSeriesServiceDTO {
+public class TvSeriesServiceDTO {
 
     private long id;
     private String firstAirDate;
@@ -35,7 +35,7 @@ public class TVSeriesServiceDTO {
     private String backdropPath;
     private String posterPath;
 
-    public TVSeriesServiceDTO(TVSeriesDetailsResponseBody tvSeriesDetailsResponseBody) {
+    public TvSeriesServiceDTO(TvSeriesDetailsResponseBody tvSeriesDetailsResponseBody) {
         this.id = tvSeriesDetailsResponseBody.getId();
         this.firstAirDate = tvSeriesDetailsResponseBody.getFirstAirDate();
         this.voteAverage = tvSeriesDetailsResponseBody.getVoteAverage();
@@ -105,7 +105,7 @@ public class TVSeriesServiceDTO {
         return TMDbConstraint.DEFAULT_MALE_PROFILE_IMG_FILE_PATH;
     }
 
-    public TVSeriesServiceDTO(
+    public TvSeriesServiceDTO(
         long uniqueID, String firstAirDate, double voteAverage, int voteCount, String contentRating,
         String overview, String name, String originalName, String tagline, String status,
         List<String> genres, List<String> productionCountries, List<String> directors,

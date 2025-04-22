@@ -3,10 +3,10 @@ package cool.cena.tmdb.pojo.response;
 import java.util.ArrayList;
 import java.util.List;
 
-import cool.cena.tmdb.pojo.servicedto.TVSeriesServiceDTO;
-import cool.cena.tmdb.pojo.servicedto.TVSeriesServiceDTO.TVSeriesServiceDTOActor;
-import cool.cena.tmdb.pojo.servicedto.TVSeriesServiceDTO.TVSeriesServiceDTOProductionCompany;
-import cool.cena.tmdb.pojo.servicedto.TVSeriesServiceDTO.TVSeriesServiceDTOSeason;
+import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO;
+import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TVSeriesServiceDTOActor;
+import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TVSeriesServiceDTOProductionCompany;
+import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TVSeriesServiceDTOSeason;
 
 public class TVSeriesResponseBody {
 
@@ -30,7 +30,7 @@ public class TVSeriesResponseBody {
     private String backdropPath;
     private String posterPath;
 
-    public TVSeriesResponseBody(TVSeriesServiceDTO tvSeriesServiceDTO) {
+    public TVSeriesResponseBody(TvSeriesServiceDTO tvSeriesServiceDTO) {
         this.id = tvSeriesServiceDTO.getId();
         this.firstAirDate = tvSeriesServiceDTO.getFirstAirDate();
         this.voteAverage = tvSeriesServiceDTO.getVoteAverage();

@@ -12,9 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import cool.cena.tmdb.pojo.tmdbresponse.EpisodeDetailsResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody;
-import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody.SearchTVSeriesResponseBodyResult;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody;
 
 public class TMDbAPIAccessor {
     
@@ -31,15 +31,12 @@ public class TMDbAPIAccessor {
             while (fs.hasNextLine()) {
                 String[] lineElements = fs.nextLine().split(",", -1);
                 if (lineElements[0].equals("accessToken")) {
-                    System.out.println("access token fetched: " + lineElements[1]);
                     return lineElements[1];
                 }
             }
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -51,22 +48,6 @@ public class TMDbAPIAccessor {
         HTTP_JSON_HEADERS.set("accept", "application/json");
         HTTP_JSON_HEADERS.set("Authorization", "Bearer " + accessToken);
         return HTTP_JSON_HEADERS;
-    }
-
-    public static TVSeriesDetailsResponseBody requestTVSeries(String title, int year, int season, int episode) {
-        SearchTVSeriesResponseBody searchTVSeriesResponseBody = searchTVSeries(title, year);
-        if (searchTVSeriesResponseBody != null) {
-            for (SearchTVSeriesResponseBodyResult result : searchTVSeriesResponseBody.getResults()) {
-                TVSeriesDetailsResponseBody tvSeriesDetailsResponseBody = getTVSeriesDetails(result.getId());
-                if (
-                    tvSeriesDetailsResponseBody.getNumberOfSeasons() == season &&
-                    tvSeriesDetailsResponseBody.getNumberOfEpisodes() == episode
-                ) {
-                    return tvSeriesDetailsResponseBody;
-                }
-            }
-        }
-        return null;
     }
 
     public static SearchTVSeriesResponseBody searchTVSeries(String title, int year) {
@@ -86,18 +67,33 @@ public class TMDbAPIAccessor {
         return responseEntity.getBody();
     }
 
-    public static TVSeriesDetailsResponseBody getTVSeriesDetails(long id) {
+    public static TvSeriesDetailsResponseBody getTvSeriesDetails(long id) {
         String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/tv/" + id)
             .queryParam("append_to_response", "content_ratings,credits")
             .queryParam("language", "zh-CN")
             .encode()
             .toUriString();
         HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
-        ResponseEntity<TVSeriesDetailsResponseBody> responseEntity = restTemplate.exchange(
+        ResponseEntity<TvSeriesDetailsResponseBody> responseEntity = restTemplate.exchange(
             url,
             HttpMethod.GET,
             requestEntity,
-            TVSeriesDetailsResponseBody.class
+            TvSeriesDetailsResponseBody.class
+        );
+        return responseEntity.getBody();
+    }
+
+    public static EpisodeDetailsResponseBody getEpisodeDetails(long tvSeriesId, int season, int episode) {
+        String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/tv/" + tvSeriesId + "/season/" + season + "/episode/" + episode)
+            .queryParam("language", "zh-CN")
+            .encode()
+            .toUriString();
+        HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
+        ResponseEntity<EpisodeDetailsResponseBody> responseEntity = restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            requestEntity,
+            EpisodeDetailsResponseBody.class
         );
         return responseEntity.getBody();
     }

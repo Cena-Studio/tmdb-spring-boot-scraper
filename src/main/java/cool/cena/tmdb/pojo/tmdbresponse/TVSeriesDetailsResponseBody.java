@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TVSeriesDetailsResponseBody {
+public class TvSeriesDetailsResponseBody {
 
     private boolean adult;
     private String homepage, overview, name, status, tagline, type;
@@ -771,22 +771,27 @@ public class TVSeriesDetailsResponseBody {
         public List<String> getDescriptors() {
             return descriptors;
         }
+
         public void setDescriptors(List<String> descriptors) {
             this.descriptors = descriptors;
         }
+
         public String getIso31661() {
             return iso31661;
         }
+
         public void setIso31661(String iso31661) {
             this.iso31661 = iso31661;
         }
+
         public String getRating() {
             return rating;
         }
+
         public void setRating(String rating) {
             this.rating = rating;
         }
-        
+
     }
 
     public static class TVSeriesDetailsResponseBodyCredit {
@@ -797,16 +802,19 @@ public class TVSeriesDetailsResponseBody {
         public List<TVSeriesDetailsResponseBodyCreditActor> getCast() {
             return cast;
         }
+
         public void setCast(List<TVSeriesDetailsResponseBodyCreditActor> cast) {
             this.cast = cast;
         }
+
         public List<TVSeriesDetailsResponseBodyCreditWorker> getCrew() {
             return crew;
         }
+
         public void setCrew(List<TVSeriesDetailsResponseBodyCreditWorker> crew) {
             this.crew = crew;
         }
-    
+
     }
 
     public static class TVSeriesDetailsResponseBodyCreditActor {
@@ -828,77 +836,97 @@ public class TVSeriesDetailsResponseBody {
         public boolean isAdult() {
             return adult;
         }
+
         public void setAdult(boolean adult) {
             this.adult = adult;
         }
+
         public int getGender() {
             return gender;
         }
+
         public void setGender(int gender) {
             this.gender = gender;
         }
+
         public int getOrder() {
             return order;
         }
+
         public void setOrder(int order) {
             this.order = order;
         }
+
         public long getId() {
             return id;
         }
+
         public void setId(long id) {
             this.id = id;
         }
+
         public String getName() {
             return name;
         }
+
         public void setName(String name) {
             this.name = name;
         }
+
         public String getCharacter() {
             return character;
         }
+
         public void setCharacter(String character) {
             this.character = character;
         }
+
         public double getPopularity() {
             return popularity;
         }
+
         public void setPopularity(double popularity) {
             this.popularity = popularity;
         }
+
         public String getKnownForDepartment() {
             return knownForDepartment;
         }
+
         public void setKnownForDepartment(String knownForDepartment) {
             this.knownForDepartment = knownForDepartment;
         }
+
         public String getOriginalName() {
             return originalName;
         }
+
         public void setOriginalName(String originalName) {
             this.originalName = originalName;
         }
+
         public String getProfilePath() {
             return profilePath;
         }
+
         public void setProfilePath(String profilePath) {
             this.profilePath = profilePath;
         }
+
         public String getCreditID() {
             return creditID;
         }
+
         public void setCreditID(String creditID) {
             this.creditID = creditID;
         }
 
-        
     }
 
     public static class TVSeriesDetailsResponseBodyCreditWorker {
 
         private boolean adult;
-        private int gender, order;
+        private int gender;
         private long id;
         private String name, department, job;
         private double popularity;
@@ -914,72 +942,87 @@ public class TVSeriesDetailsResponseBody {
         public boolean isAdult() {
             return adult;
         }
+
         public void setAdult(boolean adult) {
             this.adult = adult;
         }
+
         public int getGender() {
             return gender;
         }
+
         public void setGender(int gender) {
             this.gender = gender;
         }
-        public int getOrder() {
-            return order;
-        }
-        public void setOrder(int order) {
-            this.order = order;
-        }
+
         public long getId() {
             return id;
         }
+
         public void setId(long id) {
             this.id = id;
         }
+
         public String getName() {
             return name;
         }
+
         public void setName(String name) {
             this.name = name;
         }
+
         public String getDepartment() {
             return department;
         }
+
         public void setDepartment(String department) {
             this.department = department;
         }
+
         public String getJob() {
             return job;
         }
+
         public void setJob(String job) {
             this.job = job;
         }
+
         public double getPopularity() {
             return popularity;
         }
+
         public void setPopularity(double popularity) {
             this.popularity = popularity;
         }
+
         public String getKnownForDepartment() {
             return knownForDepartment;
         }
+
         public void setKnownForDepartment(String knownForDepartment) {
             this.knownForDepartment = knownForDepartment;
         }
+
         public String getOriginalName() {
             return originalName;
         }
+
         public void setOriginalName(String originalName) {
             this.originalName = originalName;
         }
+
         public String getProfilePath() {
             return profilePath;
         }
+
         public void setProfilePath(String profilePath) {
             this.profilePath = profilePath;
         }
+
         public String getCreditID() {
             return creditID;
         }
+
         public void setCreditID(String creditID) {
             this.creditID = creditID;
         }

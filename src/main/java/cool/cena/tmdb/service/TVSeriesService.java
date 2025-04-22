@@ -8,46 +8,59 @@ import org.springframework.stereotype.Service;
 
 import cool.cena.tmdb.helper.TMDbAPIAccessor;
 import cool.cena.tmdb.helper.TMDbConstraint;
-import cool.cena.tmdb.pojo.servicedto.TVSeriesServiceDTO;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreator;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCredit;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditActor;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditWorker;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyNetwork;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyProductionCompany;
-import cool.cena.tmdb.pojo.tmdbresponse.TVSeriesDetailsResponseBody.TVSeriesDetailsResponseBodySeason;
+import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO;
+import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody;
+import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody.SearchTVSeriesResponseBodyResult;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreator;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCredit;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditActor;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditWorker;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyNetwork;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyProductionCompany;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodySeason;
 
 @Service
-public class TVSeriesService {
+public class TvSeriesService {
 
-    public TVSeriesServiceDTO getTvSeriesInfo(String title, int year, int seasonSize, int episodeSize) {
-        
-        TVSeriesDetailsResponseBody tvSeriesDetailsResponseBody = TMDbAPIAccessor.requestTVSeries(title, year, seasonSize, episodeSize);
-        
-        this.downloadBackdropImgFile(tvSeriesDetailsResponseBody.getBackdropPath());
-        this.downloadPosterImgFile(tvSeriesDetailsResponseBody.getPosterPath());
-        for (TVSeriesDetailsResponseBodyCreator creator : tvSeriesDetailsResponseBody.getCreatedBy()) {
-            this.downloadProfileImgFile(creator.getProfilePath());
-        }
-        for (TVSeriesDetailsResponseBodyNetwork network : tvSeriesDetailsResponseBody.getNetworks()) {
-            this.downloadLogoImgFile(network.getLogoPath());
-        }
-        for (TVSeriesDetailsResponseBodyProductionCompany company : tvSeriesDetailsResponseBody.getProductionCompanies()) {
-            this.downloadLogoImgFile(company.getLogoPath());
-        }
-        for (TVSeriesDetailsResponseBodySeason season : tvSeriesDetailsResponseBody.getSeasons()) {
-            this.downloadPosterImgFile(season.getPosterPath());
-        }
-        TVSeriesDetailsResponseBodyCredit credit = tvSeriesDetailsResponseBody.getCredits();
-        for (TVSeriesDetailsResponseBodyCreditActor actor : credit.getCast()) {
-            this.downloadProfileImgFile(actor.getProfilePath());
-        }
-        for (TVSeriesDetailsResponseBodyCreditWorker worker : credit.getCrew()) {
-            this.downloadProfileImgFile(worker.getProfilePath());
+    public TvSeriesServiceDTO getTvSeriesInfo(String title, int year, int seasonSize, int episodeSize) {
+
+        SearchTVSeriesResponseBody searchTVSeriesResponseBody = TMDbAPIAccessor.searchTVSeries(title, year);
+        if (searchTVSeriesResponseBody != null) {
+            for (SearchTVSeriesResponseBodyResult result : searchTVSeriesResponseBody.getResults()) {
+                TvSeriesDetailsResponseBody tvSeriesDetailsResponseBody = TMDbAPIAccessor.getTvSeriesDetails(result.getId());
+                if (
+                    tvSeriesDetailsResponseBody.getNumberOfSeasons() == seasonSize &&
+                    tvSeriesDetailsResponseBody.getNumberOfEpisodes() == episodeSize
+                ) {
+                    this.downloadBackdropImgFile(tvSeriesDetailsResponseBody.getBackdropPath());
+                    this.downloadPosterImgFile(tvSeriesDetailsResponseBody.getPosterPath());
+                    for (TVSeriesDetailsResponseBodyCreator creator : tvSeriesDetailsResponseBody.getCreatedBy()) {
+                        this.downloadProfileImgFile(creator.getProfilePath());
+                    }
+                    for (TVSeriesDetailsResponseBodyNetwork network : tvSeriesDetailsResponseBody.getNetworks()) {
+                        this.downloadLogoImgFile(network.getLogoPath());
+                    }
+                    for (TVSeriesDetailsResponseBodyProductionCompany company : tvSeriesDetailsResponseBody.getProductionCompanies()) {
+                        this.downloadLogoImgFile(company.getLogoPath());
+                    }
+                    for (TVSeriesDetailsResponseBodySeason season : tvSeriesDetailsResponseBody.getSeasons()) {
+                        this.downloadPosterImgFile(season.getPosterPath());
+                    }
+                    TVSeriesDetailsResponseBodyCredit credit = tvSeriesDetailsResponseBody.getCredits();
+                    for (TVSeriesDetailsResponseBodyCreditActor actor : credit.getCast()) {
+                        this.downloadProfileImgFile(actor.getProfilePath());
+                    }
+                    for (TVSeriesDetailsResponseBodyCreditWorker worker : credit.getCrew()) {
+                        this.downloadProfileImgFile(worker.getProfilePath());
+                    }
+
+                    return new TvSeriesServiceDTO(tvSeriesDetailsResponseBody);           
+                }
+            }
         }
 
-        return new TVSeriesServiceDTO(tvSeriesDetailsResponseBody);
+        return null;
         
     }
 
