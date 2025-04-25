@@ -12,6 +12,7 @@ public class TMDbConstraint {
     public static final String DEFAULT_FEMALE_PROFILE_IMG_FILE_PATH = IMG_FILE_PATH + "/defaultprofilefemale.jpg";
     public static final String DEFAULT_POSTER_IMG_FILE_PATH = IMG_FILE_PATH + "/defaultposter.jpg";
     public static final String DEFAULT_BACKDROP_IMG_FILE_PATH = IMG_FILE_PATH + "/defaultbackdrop.jpg";
+    public static final String DEFAULT_STILL_IMG_FILE_PATH = IMG_FILE_PATH + "/defaultstill.jpg";
     public static final String TMDB_BACKDROP_IMG_PATH = "https://image.tmdb.org/t/p/w1280";
     public static final String TMDB_LOGO_IMG_PATH = "https://image.tmdb.org/t/p/w300";
     public static final String TMDB_POSTER_IMG_PATH = "https://image.tmdb.org/t/p/w780";

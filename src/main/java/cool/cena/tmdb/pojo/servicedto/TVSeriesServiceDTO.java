@@ -6,7 +6,10 @@ import java.util.List;
 import cool.cena.tmdb.helper.TMDbConstraint;
 import cool.cena.tmdb.pojo.tmdbresponse.EpisodeDetailsResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody;
+import cool.cena.tmdb.pojo.tmdbresponse.EpisodeDetailsResponseBody.EpisodeDetailsResponseBodyActor;
+import cool.cena.tmdb.pojo.tmdbresponse.EpisodeDetailsResponseBody.EpisodeDetailsResponseBodyWorker;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyContentRatingResult;
+import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreator;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditActor;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditWorker;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyGenre;
@@ -42,14 +45,17 @@ public class TvSeriesServiceDTO {
         List<EpisodeDetailsResponseBody> episodes 
     ) {
         this.id = tvSeries.getId();
-        this.firstAirDate = tvSeries.getFirstAirDate();
+        this.firstAirDate = excludeEmpty(tvSeries.getFirstAirDate());
         this.voteAverage = tvSeries.getVoteAverage();
         this.voteCount = tvSeries.getVoteCount();
         this.contentRating = getContentRating(tvSeries.getContentRatings().getResults());
-        this.overview = tvSeries.getOverview();
-        this.name = tvSeries.getName();
-        this.originalName = tvSeries.getOriginalName();
-        this.tagline = tvSeries.getTagline();
+        this.overview = excludeEmpty(tvSeries.getOverview());
+        this.name = excludeEmpty(tvSeries.getName());
+        this.originalName = excludeEmpty(tvSeries.getOriginalName());
+        if (this.name == null) {
+            this.name = this.originalName;
+        }
+        this.tagline = excludeEmpty(tvSeries.getTagline());
         for (TVSeriesDetailsResponseBodyGenre genre : tvSeries.getGenres()) {
             this.genres.add(genre.getName());
         }
@@ -57,44 +63,119 @@ public class TvSeriesServiceDTO {
             this.productionCountries.add(country.getIso31661());
         }
         for (TVSeriesDetailsResponseBodyCreditWorker worker : tvSeries.getCredits().getCrew()) {
+            String workerName = excludeEmpty(worker.getName());
+            if (workerName == null) {
+                workerName = excludeEmpty(worker.getOriginalName());
+            }
             String job = worker.getJob().toLowerCase();
-            if (job.contains("director")) {
-                this.directors.add(worker.getName());
-            } else if (job.contains("screenplay")) {
-                this.writers.add(worker.getName());
+            if (job.contains("director") && workerName != null) {
+                this.directors.add(workerName);
+            } else if (job.contains("screenplay") && workerName != null) { 
+                this.writers.add(workerName);
             }
         }
-        if (this.directors.size() == 0) {
-            try {
-                this.directors.add(tvSeries.getCreatedBy().get(0).getName());
-            } catch (IndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
+        String globalCreator = getGlobalCreator(tvSeries.getCreatedBy());
+        if (this.directors.isEmpty() && globalCreator != null) {
+            this.directors.add(globalCreator);
         }
-        if (this.writers.size() == 0) {
-            try {
-                this.writers.add(tvSeries.getCreatedBy().get(0).getName());
-            } catch (IndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
+        if (this.writers.isEmpty() && globalCreator != null) {
+            this.writers.add(globalCreator);
         }
         for (TVSeriesDetailsResponseBodyProductionCompany company : tvSeries.getProductionCompanies()) {
-            String companyLogoPath = company.getLogoPath() == null ? TMDbConstraint.DEFAULT_LOGO_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + company.getLogoPath();
-            this.productionCompanies.add(new TVSeriesServiceDTOProductionCompany(company.getName(), companyLogoPath));
+            String companyName = excludeEmpty(company.getName());
+            if (companyName != null) {
+                String companyLogoPath = excludeEmpty(company.getLogoPath()) == null ? TMDbConstraint.DEFAULT_LOGO_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + company.getLogoPath();
+                this.productionCompanies.add(new TVSeriesServiceDTOProductionCompany(excludeEmpty(company.getName()), companyLogoPath));
+            }
         }
         for (TVSeriesDetailsResponseBodyCreditActor actor : tvSeries.getCredits().getCast()) {
-            String actorProfilePath = actor.getProfilePath() == null ? getDefaultActorProfilePath(actor.getGender()) : TMDbConstraint.IMG_FILE_PATH + actor.getProfilePath();
-            this.cast.add(new TvSeriesServiceDTOActor(actor.getName(), actor.getCharacter(), actorProfilePath, actor.getOrder()));
+            String actorName = excludeEmpty(actor.getName());
+            if (actorName == null) {
+                actorName = excludeEmpty(actor.getOriginalName());
+            }
+            if (actorName != null) {
+                String actorCharacter = excludeEmpty(actor.getOriginalName()) == null ? "未知" : actor.getOriginalName();
+                String actorProfilePath = excludeEmpty(actor.getProfilePath()) == null ? getDefaultActorProfilePath(actor.getGender()) : TMDbConstraint.IMG_FILE_PATH + actor.getProfilePath();
+                this.cast.add(new TvSeriesServiceDTOActor(actorName, actorCharacter, actorProfilePath, actor.getOrder()));
+            }
+           
         }
         for (TVSeriesDetailsResponseBodySeason season : tvSeries.getSeasons()) {
-            String seasonPosterPath = season.getPosterPath() == null ? TMDbConstraint.DEFAULT_POSTER_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + season.getPosterPath();
-            this.seasons.add(new TvSeriesServiceDTOSeason(season.getSeasonNumber(), season.getName(), seasonPosterPath));
+            String seasonName = excludeEmpty(season.getName()) == null ? "第" + season.getSeasonNumber() + "季" : season.getName();
+            String seasonPosterPath = excludeEmpty(season.getPosterPath()) == null ? TMDbConstraint.DEFAULT_POSTER_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + season.getPosterPath();
+            this.seasons.add(new TvSeriesServiceDTOSeason(season.getSeasonNumber(), seasonName, seasonPosterPath));
         }
-        this.backdropPath = tvSeries.getBackdropPath() == null ? TMDbConstraint.DEFAULT_BACKDROP_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + tvSeries.getBackdropPath();
-        this.posterPath = tvSeries.getPosterPath() == null ? TMDbConstraint.DEFAULT_POSTER_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + tvSeries.getPosterPath();
+        this.backdropPath = excludeEmpty(tvSeries.getBackdropPath()) == null ? TMDbConstraint.DEFAULT_BACKDROP_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + tvSeries.getBackdropPath();
+        this.posterPath = excludeEmpty(tvSeries.getPosterPath()) == null ? TMDbConstraint.DEFAULT_POSTER_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + tvSeries.getPosterPath();
         for (EpisodeDetailsResponseBody episode : episodes) {
-            this.episodes.add(new TvSeriesServiceDTOEpisode(episode.getSeasonNumber(), episode.getEpisodeNumber(), episode.getAirDate()));
+        
+            String episodeStillPath = excludeEmpty(episode.getStillPath()) == null ? TMDbConstraint.DEFAULT_STILL_IMG_FILE_PATH : TMDbConstraint.TMDB_STILL_IMG_PATH + episode.getStillPath();
+            List<String> episodeDirectors = new ArrayList<>();
+            List<String> episodeWriters = new ArrayList<>();
+            List<TvSeriesServiceDTOActor> episodeCast = new ArrayList<>();
+
+            for (EpisodeDetailsResponseBodyWorker worker : episode.getCrew()) {
+                String workerName = excludeEmpty(worker.getName());
+                if (workerName == null) {
+                    workerName = excludeEmpty(worker.getOriginalName());
+                }
+                String job = worker.getJob().toLowerCase();
+                if (job.contains("director") && workerName != null) {
+                    episodeDirectors.add(workerName);
+                } else if (job.contains("screenplay") && workerName != null) { 
+                    episodeWriters.add(workerName);
+                }
+            }
+            if (episodeDirectors.isEmpty()) {
+                episodeDirectors = this.directors;
+            }
+            if (episodeWriters.isEmpty()) {
+                episodeWriters = this.writers;
+            }
+
+            for (EpisodeDetailsResponseBodyActor actor : episode.getGuestStars()) {
+                String episodeActorName = excludeEmpty(actor.getName());
+                if (episodeActorName == null) {
+                    episodeActorName = excludeEmpty(actor.getOriginalName());
+                }
+                if (episodeActorName != null) {
+                    String episodeActorCharacter = excludeEmpty(actor.getCharacter()) == null ? "未知" : actor.getCharacter();
+                    String episodeActorProfilePath = excludeEmpty(actor.getProfilePath()) == null ? getDefaultActorProfilePath(actor.getGender()) : TMDbConstraint.IMG_FILE_PATH + actor.getProfilePath();
+                    episodeCast.add(new TvSeriesServiceDTOActor(episodeActorName, episodeActorCharacter, episodeActorProfilePath, actor.getOrder()));
+                }
+               
+            }
+
+            this.episodes.add(new TvSeriesServiceDTOEpisode(
+                excludeEmpty(episode.getName()),
+                excludeEmpty(episode.getOverview()),
+                excludeEmpty(episode.getAirDate()),
+                episodeStillPath,
+                episode.getId(),
+                episode.getRuntime(),
+                episode.getSeasonNumber(),
+                episode.getEpisodeNumber(),
+                episode.getVoteCount(),
+                episode.getVoteAverage(),
+                episodeDirectors,
+                episodeWriters,
+                episodeCast
+            ));
         }
+    }
+
+    private String excludeEmpty (String str) {
+        if (str == null || str.isEmpty()) {
+            return null;
+        }
+        return str;
+    }
+
+    private <T> List<T> excludeEmpty (List<T> list) {
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+        return list;
     }
 
     private String getContentRating(List<TVSeriesDetailsResponseBodyContentRatingResult> contentRatingResults) {
@@ -104,6 +185,19 @@ public class TvSeriesServiceDTO {
             }
         }
         return "G";
+    }
+
+    private String getGlobalCreator(List<TVSeriesDetailsResponseBodyCreator> creators) {
+        creators = excludeEmpty(creators);
+        if (creators != null) {
+            for(TVSeriesDetailsResponseBodyCreator creator : creators) {
+                String creatorName = excludeEmpty(creator.getName());
+                if (creatorName != null) {
+                    return creatorName;
+                }
+            }
+        }
+        return null;
     }
 
     private String getDefaultActorProfilePath(int gender) {
@@ -295,13 +389,54 @@ public class TvSeriesServiceDTO {
 
     public static class TvSeriesServiceDTOEpisode {
 
-        private int seasonNumber, episodeNumber;
-        private String airDate;
+        private String name, overview, airDate, stillPath;
+        private long id;
+        private int runtime, seasonNumber, episodeNumber, voteCount;
+        private double voteAverage;
+        private List<String> directors;
+        private List<String> writers;
+        private List<TvSeriesServiceDTOActor> cast;
 
-        public TvSeriesServiceDTOEpisode(int seasonNumber, int episodeNumber, String airDate) {
+        public TvSeriesServiceDTOEpisode(String name, String overview, String airDate, String stillPath, long id,
+                int runtime, int seasonNumber, int episodeNumber, int voteCount, double voteAverage,
+                List<String> directors, List<String> writers, List<TvSeriesServiceDTOActor> cast) {
+            this.name = name;
+            this.overview = overview;
+            this.airDate = airDate;
+            this.stillPath = stillPath;
+            this.id = id;
+            this.runtime = runtime;
             this.seasonNumber = seasonNumber;
             this.episodeNumber = episodeNumber;
-            this.airDate = airDate;
+            this.voteCount = voteCount;
+            this.voteAverage = voteAverage;
+            this.directors = directors;
+            this.writers = writers;
+            this.cast = cast;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getOverview() {
+            return overview;
+        }
+
+        public String getAirDate() {
+            return airDate;
+        }
+
+        public String getStillPath() {
+            return stillPath;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public int getRuntime() {
+            return runtime;
         }
 
         public int getSeasonNumber() {
@@ -312,9 +447,25 @@ public class TvSeriesServiceDTO {
             return episodeNumber;
         }
 
-        public String getAirDate() {
-            return airDate;
+        public int getVoteCount() {
+            return voteCount;
         }
+
+        public double getVoteAverage() {
+            return voteAverage;
+        }
+
+        public List<String> getDirectors() {
+            return directors;
+        }
+
+        public List<String> getWriters() {
+            return writers;
+        }
+
+        public List<TvSeriesServiceDTOActor> getCast() {
+            return cast;
+        }        
 
     }
 

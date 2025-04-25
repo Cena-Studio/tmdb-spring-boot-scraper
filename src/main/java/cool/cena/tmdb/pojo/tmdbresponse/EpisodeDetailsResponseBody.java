@@ -9,13 +9,13 @@ public class EpisodeDetailsResponseBody {
     private String name, overview;
     private long id;
     private int runtime;
-    private List<EpisodeDetailsResponseBodyCreditWorker> crew;
+    private List<EpisodeDetailsResponseBodyWorker> crew;
     @JsonProperty("air_date")
     private String airDate;
     @JsonProperty("episode_number")
     private int episodeNumber;
     @JsonProperty("guest_stars")
-    private List<EpisodeDetailsResponseBodyCreditActor> guestStars;
+    private List<EpisodeDetailsResponseBodyActor> guestStars;
     @JsonProperty("production_code")
     private String productionCode;
     @JsonProperty("season_number")
@@ -59,11 +59,11 @@ public class EpisodeDetailsResponseBody {
         this.runtime = runtime;
     }
 
-    public List<EpisodeDetailsResponseBodyCreditWorker> getCrew() {
+    public List<EpisodeDetailsResponseBodyWorker> getCrew() {
         return crew;
     }
 
-    public void setCrew(List<EpisodeDetailsResponseBodyCreditWorker> crew) {
+    public void setCrew(List<EpisodeDetailsResponseBodyWorker> crew) {
         this.crew = crew;
     }
 
@@ -83,11 +83,11 @@ public class EpisodeDetailsResponseBody {
         this.episodeNumber = episodeNumber;
     }
 
-    public List<EpisodeDetailsResponseBodyCreditActor> getGuestStars() {
+    public List<EpisodeDetailsResponseBodyActor> getGuestStars() {
         return guestStars;
     }
 
-    public void setGuestStars(List<EpisodeDetailsResponseBodyCreditActor> guestStars) {
+    public void setGuestStars(List<EpisodeDetailsResponseBodyActor> guestStars) {
         this.guestStars = guestStars;
     }
 
@@ -131,7 +131,7 @@ public class EpisodeDetailsResponseBody {
         this.voteCount = voteCount;
     }
 
-    public static class EpisodeDetailsResponseBodyCreditWorker {
+    public static class EpisodeDetailsResponseBodyWorker {
 
         private boolean adult;
         private int gender;
@@ -237,7 +237,7 @@ public class EpisodeDetailsResponseBody {
 
     }
 
-    public static class EpisodeDetailsResponseBodyCreditActor {
+    public static class EpisodeDetailsResponseBodyActor {
 
         private boolean adult;
         private int gender, order;
