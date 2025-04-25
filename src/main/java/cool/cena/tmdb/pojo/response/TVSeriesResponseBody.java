@@ -9,7 +9,7 @@ import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TvSeriesServiceDTOEpiso
 import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TVSeriesServiceDTOProductionCompany;
 import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO.TvSeriesServiceDTOSeason;
 
-public class TVSeriesResponseBody {
+public class TvSeriesResponseBody {
 
     private long id;
     private String firstAirDate;
@@ -32,7 +32,7 @@ public class TVSeriesResponseBody {
     private String posterPath;
     private List<TvSeriesResponseBodyEpisode> episodes = new ArrayList<>();
 
-    public TVSeriesResponseBody(TvSeriesServiceDTO tvSeries) {
+    public TvSeriesResponseBody(TvSeriesServiceDTO tvSeries) {
         this.id = tvSeries.getId();
         this.firstAirDate = tvSeries.getFirstAirDate();
         this.voteAverage = tvSeries.getVoteAverage();
@@ -62,11 +62,31 @@ public class TVSeriesResponseBody {
         this.backdropPath = tvSeries.getBackdropPath();
         this.posterPath = tvSeries.getPosterPath();
         for (TvSeriesServiceDTOEpisode episode : tvSeries.getEpisodes()) {
-            this.episodes.add(new TvSeriesResponseBodyEpisode(episode.getSeasonNumber(), episode.getEpisodeNumber(), episode.getAirDate()));
+            List<TvSeriesResponseBodyActor> episodeCast = new ArrayList<>();
+            for (TvSeriesServiceDTOActor actor : episode.getCast()) {
+                episodeCast.add(new TvSeriesResponseBodyActor(
+                    actor.getName(), actor.getCharacter(), actor.getProfilePath(), actor.getOrder()
+                ));
+            }
+            this.episodes.add(new TvSeriesResponseBodyEpisode(
+                episode.getName(),
+                episode.getOverview(),
+                episode.getAirDate(),
+                episode.getStillPath(),
+                episode.getId(),
+                episode.getRuntime(),
+                episode.getSeasonNumber(),
+                episode.getEpisodeNumber(),
+                episode.getVoteCount(),
+                episode.getVoteAverage(),
+                episode.getDirectors(),
+                episode.getWriters(),
+                episodeCast
+            ));
         }
     }
 
-    public TVSeriesResponseBody(long id, String firstAirDate, double voteAverage, int voteCount, String contentRating,
+    public TvSeriesResponseBody(long id, String firstAirDate, double voteAverage, int voteCount, String contentRating,
             String overview, String name, String originalName, String tagline, String status, List<String> genres,
             List<String> productionCountries, List<String> directors,
             List<TvSeriesResponseBodyProductionCompany> productionCompanies, List<String> writers,
@@ -365,38 +385,111 @@ public class TVSeriesResponseBody {
 
     public static class TvSeriesResponseBodyEpisode {
 
-        private int seasonNumber, episodeNumber;
-        private String airDate;
-
-        public TvSeriesResponseBodyEpisode(int seasonNumber, int episodeNumber, String airDate) {
-            this.seasonNumber = seasonNumber;
-            this.episodeNumber = episodeNumber;
+        private String name, overview, airDate, stillPath;
+        private long id;
+        private int runtime, seasonNumber, episodeNumber, voteCount;
+        private double voteAverage;
+        private List<String> directors;
+        private List<String> writers;
+        private List<TvSeriesResponseBodyActor> cast;
+        public TvSeriesResponseBodyEpisode(String name, String overview, String airDate, String stillPath, long id,
+                int runtime, int seasonNumber, int episodeNumber, int voteCount, double voteAverage,
+                List<String> directors, List<String> writers, List<TvSeriesResponseBodyActor> cast) {
+            this.name = name;
+            this.overview = overview;
             this.airDate = airDate;
-        }
-
-        public int getSeasonNumber() {
-            return seasonNumber;
-        }
-
-        public void setSeasonNumber(int seasonNumber) {
+            this.stillPath = stillPath;
+            this.id = id;
+            this.runtime = runtime;
             this.seasonNumber = seasonNumber;
-        }
-
-        public int getEpisodeNumber() {
-            return episodeNumber;
-        }
-
-        public void setEpisodeNumber(int episodeNumber) {
             this.episodeNumber = episodeNumber;
+            this.voteCount = voteCount;
+            this.voteAverage = voteAverage;
+            this.directors = directors;
+            this.writers = writers;
+            this.cast = cast;
         }
 
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public String getOverview() {
+            return overview;
+        }
+        public void setOverview(String overview) {
+            this.overview = overview;
+        }
         public String getAirDate() {
             return airDate;
         }
-
         public void setAirDate(String airDate) {
             this.airDate = airDate;
         }
+        public String getStillPath() {
+            return stillPath;
+        }
+        public void setStillPath(String stillPath) {
+            this.stillPath = stillPath;
+        }
+        public long getId() {
+            return id;
+        }
+        public void setId(long id) {
+            this.id = id;
+        }
+        public int getRuntime() {
+            return runtime;
+        }
+        public void setRuntime(int runtime) {
+            this.runtime = runtime;
+        }
+        public int getSeasonNumber() {
+            return seasonNumber;
+        }
+        public void setSeasonNumber(int seasonNumber) {
+            this.seasonNumber = seasonNumber;
+        }
+        public int getEpisodeNumber() {
+            return episodeNumber;
+        }
+        public void setEpisodeNumber(int episodeNumber) {
+            this.episodeNumber = episodeNumber;
+        }
+        public int getVoteCount() {
+            return voteCount;
+        }
+        public void setVoteCount(int voteCount) {
+            this.voteCount = voteCount;
+        }
+        public double getVoteAverage() {
+            return voteAverage;
+        }
+        public void setVoteAverage(double voteAverage) {
+            this.voteAverage = voteAverage;
+        }
+        public List<String> getDirectors() {
+            return directors;
+        }
+        public void setDirectors(List<String> directors) {
+            this.directors = directors;
+        }
+        public List<String> getWriters() {
+            return writers;
+        }
+        public void setWriters(List<String> writers) {
+            this.writers = writers;
+        }
+        public List<TvSeriesResponseBodyActor> getCast() {
+            return cast;
+        }
+        public void setCast(List<TvSeriesResponseBodyActor> cast) {
+            this.cast = cast;
+        }
+
+        
 
     }
 

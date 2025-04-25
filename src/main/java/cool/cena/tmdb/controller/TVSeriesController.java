@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cool.cena.tmdb.pojo.response.TVSeriesResponseBody;
+import cool.cena.tmdb.pojo.response.TvSeriesResponseBody;
 import cool.cena.tmdb.pojo.servicedto.TvSeriesServiceDTO;
 import cool.cena.tmdb.service.TvSeriesService;
 
@@ -18,11 +18,11 @@ public class TVSeriesController {
     private TvSeriesService tvSeriesService;
 
     @GetMapping
-    public ResponseEntity<TVSeriesResponseBody> getTVSeriesInfo(String title, int year, int season, int episode) {
+    public ResponseEntity<TvSeriesResponseBody> getTVSeriesInfo(String title, int year, int season, int episode) {
 
         TvSeriesServiceDTO tvSeriesServiceDTO = tvSeriesService.getTvSeriesInfo(title, year, season, episode);
 
-        return ResponseEntity.ok(new TVSeriesResponseBody(tvSeriesServiceDTO));
+        return ResponseEntity.ok(new TvSeriesResponseBody(tvSeriesServiceDTO));
 
     }
 
