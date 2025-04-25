@@ -15,6 +15,8 @@ import cool.cena.tmdb.pojo.tmdbresponse.EpisodeDetailsResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody.SearchTVSeriesResponseBodyResult;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody;
+import cool.cena.tmdb.pojo.tmdbresponse.EpisodeDetailsResponseBody.EpisodeDetailsResponseBodyActor;
+import cool.cena.tmdb.pojo.tmdbresponse.EpisodeDetailsResponseBody.EpisodeDetailsResponseBodyWorker;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreator;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCredit;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody.TVSeriesDetailsResponseBodyCreditActor;
@@ -54,6 +56,15 @@ public class TvSeriesService {
 
                         for (int i = 1; i <= season.getEpisodeCount(); i++) {
                             EpisodeDetailsResponseBody episode = TMDbAPIAccessor.getEpisodeDetails(tvSeriesId, season.getSeasonNumber(), i);
+
+                            this.downloadStillImgFile(episode.getStillPath());
+                            for (EpisodeDetailsResponseBodyActor actor : episode.getGuestStars()) {
+                                this.downloadProfileImgFile(actor.getProfilePath());
+                            }
+                            for (EpisodeDetailsResponseBodyWorker worker : episode.getCrew()) {
+                                this.downloadProfileImgFile(worker.getProfilePath());
+                            }
+
                             episodes.add(episode);
                         }
                     }
@@ -103,12 +114,19 @@ public class TvSeriesService {
     }
 
     /**
+     * @param stillPath a string that contains a "/" and the file name. E.g. "/abcdefgh.jpg".
+     */
+    private void downloadStillImgFile(String stillPath) {
+        this.downloadImgFile(TMDbConstraint.TMDB_STILL_IMG_PATH, stillPath);
+    }
+
+    /**
      * Download the image if it does not exist.
-     * @param tmdbImgPath the prifix of the url
+     * @param tmdbImgPath the prefix of the url
      * @param filePath a string that contains a "/" and the file name. E.g. "/abcdefgh.jpg".
      */
     private void downloadImgFile(String tmdbImgPath, String filePath) {
-        if (filePath == null) {
+        if (filePath == null || filePath.isEmpty()) {
             return;
         }
 
