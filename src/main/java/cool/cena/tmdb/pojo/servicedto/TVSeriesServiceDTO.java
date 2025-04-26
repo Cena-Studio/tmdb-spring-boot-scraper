@@ -109,7 +109,7 @@ public class TvSeriesServiceDTO {
         this.posterPath = excludeEmpty(tvSeries.getPosterPath()) == null ? TMDbConstraint.DEFAULT_POSTER_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + tvSeries.getPosterPath();
         for (EpisodeDetailsResponseBody episode : episodes) {
         
-            String episodeStillPath = excludeEmpty(episode.getStillPath()) == null ? TMDbConstraint.DEFAULT_STILL_IMG_FILE_PATH : TMDbConstraint.TMDB_STILL_IMG_PATH + episode.getStillPath();
+            String episodeStillPath = excludeEmpty(episode.getStillPath()) == null ? TMDbConstraint.DEFAULT_STILL_IMG_FILE_PATH : TMDbConstraint.IMG_FILE_PATH + episode.getStillPath();
             List<String> episodeDirectors = new ArrayList<>();
             List<String> episodeWriters = new ArrayList<>();
             List<TvSeriesServiceDTOActor> episodeCast = new ArrayList<>();
