@@ -13,6 +13,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import cool.cena.tmdb.pojo.tmdbresponse.EpisodeDetailsResponseBody;
+import cool.cena.tmdb.pojo.tmdbresponse.MovieDetailsResponseBody;
+import cool.cena.tmdb.pojo.tmdbresponse.SearchMovieResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.SearchTVSeriesResponseBody;
 import cool.cena.tmdb.pojo.tmdbresponse.TvSeriesDetailsResponseBody;
 
@@ -94,6 +96,40 @@ public class TMDbAPIAccessor {
             HttpMethod.GET,
             requestEntity,
             EpisodeDetailsResponseBody.class
+        );
+        return responseEntity.getBody();
+    }
+
+    public static SearchMovieResponseBody searchMovie(String title, int year) {
+        String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/search/movie")
+            .queryParam("query", title)
+            .queryParam("include_adult", true)
+            .queryParam("language", "zh-CN")
+            .queryParam("primary_release_year", year)
+            .encode()
+            .toUriString();
+        HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
+        ResponseEntity<SearchMovieResponseBody> responseEntity = restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            requestEntity,
+            SearchMovieResponseBody.class
+        );
+        return responseEntity.getBody();
+    }
+
+    public static MovieDetailsResponseBody getMovieDetails(long id) {
+        String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/movie/" + id)
+            .queryParam("append_to_response", "release_dates,credits")
+            .queryParam("language", "zh-CN")
+            .encode()
+            .toUriString();
+        HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
+        ResponseEntity<MovieDetailsResponseBody> responseEntity = restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            requestEntity,
+            MovieDetailsResponseBody.class
         );
         return responseEntity.getBody();
     }
