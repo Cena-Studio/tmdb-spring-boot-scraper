@@ -15,7 +15,7 @@ public class MovieDetailsResponseBody {
     @JsonProperty("backdrop_path")
     private String backdropPath;
     @JsonProperty("belongs_to_collection")
-    private String belongsToCollection;
+    private MovieDetailsResponseBodyCollection belongsToCollection;
     @JsonProperty("imdb_id")
     private String imdbId;
     @JsonProperty("original_language")
@@ -152,11 +152,11 @@ public class MovieDetailsResponseBody {
         this.backdropPath = backdropPath;
     }
 
-    public String getBelongsToCollection() {
+    public MovieDetailsResponseBodyCollection getBelongsToCollection() {
         return belongsToCollection;
     }
 
-    public void setBelongsToCollection(String belongsToCollection) {
+    public void setBelongsToCollection(MovieDetailsResponseBodyCollection belongsToCollection) {
         this.belongsToCollection = belongsToCollection;
     }
 
@@ -279,164 +279,38 @@ public class MovieDetailsResponseBody {
 
     }
 
-    public static class MovieDetailsResponseBodyLastAir {
-
-        private int id, runtime;
-        private String name, overview;
-        @JsonProperty("vode_average")
-        private double voteAverage;
-        @JsonProperty("vote_count")
-        private int voteCount;
-        @JsonProperty("air_date")
-        private String airDate;
-        @JsonProperty("episode_number")
-        private int episodeNumber;
-        @JsonProperty("production_code")
-        private String productionCode;
-        @JsonProperty("season_number")
-        private int seasonNumber;
-        @JsonProperty("show_id")
-        private long showID;
-        @JsonProperty("still_path")
-        private String stillPath;
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public int getRuntime() {
-            return runtime;
-        }
-
-        public void setRuntime(int runtime) {
-            this.runtime = runtime;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getOverview() {
-            return overview;
-        }
-
-        public void setOverview(String overview) {
-            this.overview = overview;
-        }
-
-        public double getVoteAverage() {
-            return voteAverage;
-        }
-
-        public void setVoteAverage(double voteAverage) {
-            this.voteAverage = voteAverage;
-        }
-
-        public int getVoteCount() {
-            return voteCount;
-        }
-
-        public void setVoteCount(int voteCount) {
-            this.voteCount = voteCount;
-        }
-
-        public String getAirDate() {
-            return airDate;
-        }
-
-        public void setAirDate(String airDate) {
-            this.airDate = airDate;
-        }
-
-        public int getEpisodeNumber() {
-            return episodeNumber;
-        }
-
-        public void setEpisodeNumber(int episodeNumber) {
-            this.episodeNumber = episodeNumber;
-        }
-
-        public String getProductionCode() {
-            return productionCode;
-        }
-
-        public void setProductionCode(String productionCode) {
-            this.productionCode = productionCode;
-        }
-
-        public int getSeasonNumber() {
-            return seasonNumber;
-        }
-
-        public void setSeasonNumber(int seasonNumber) {
-            this.seasonNumber = seasonNumber;
-        }
-
-        public long getShowID() {
-            return showID;
-        }
-
-        public void setShowID(long showID) {
-            this.showID = showID;
-        }
-
-        public String getStillPath() {
-            return stillPath;
-        }
-
-        public void setStillPath(String stillPath) {
-            this.stillPath = stillPath;
-        }
-
-    }
-
-    public static class MovieDetailsResponseBodyNetwork {
+    public static class MovieDetailsResponseBodyCollection {
 
         private long id;
         private String name;
-        @JsonProperty("logo_path")
-        private String logoPath;
-        @JsonProperty("origin_country")
-        private String originCountry;
+        @JsonProperty("backdrop_path")
+        private String backdropPath;
+        @JsonProperty("poster_path")
+        private String posterPath;
 
         public long getId() {
             return id;
         }
-
         public void setId(long id) {
             this.id = id;
         }
-
         public String getName() {
             return name;
         }
-
         public void setName(String name) {
             this.name = name;
         }
-
-        public String getLogoPath() {
-            return logoPath;
+        public String getBackdropPath() {
+            return backdropPath;
         }
-
-        public void setLogoPath(String logoPath) {
-            this.logoPath = logoPath;
+        public void setBackdropPath(String backdropPath) {
+            this.backdropPath = backdropPath;
         }
-
-        public String getOriginCountry() {
-            return originCountry;
+        public String getPosterPath() {
+            return posterPath;
         }
-
-        public void setOriginCountry(String originCountry) {
-            this.originCountry = originCountry;
+        public void setPosterPath(String posterPath) {
+            this.posterPath = posterPath;
         }
 
     }
@@ -504,87 +378,6 @@ public class MovieDetailsResponseBody {
 
         public void setIso31661(String iso31661) {
             this.iso31661 = iso31661;
-        }
-
-    }
-
-    public static class MovieDetailsResponseBodySeason {
-
-        private long id;
-        private String name, overview;
-        @JsonProperty("air_date")
-        private String airDate;
-        @JsonProperty("episode_count")
-        private int episodeCount;
-        @JsonProperty("poster_path")
-        private String posterPath;
-        @JsonProperty("season_number")
-        private int seasonNumber;
-        @JsonProperty("vote_average")
-        private double voteAverage;
-
-        public long getId() {
-            return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getOverview() {
-            return overview;
-        }
-
-        public void setOverview(String overview) {
-            this.overview = overview;
-        }
-
-        public String getAirDate() {
-            return airDate;
-        }
-
-        public void setAirDate(String airDate) {
-            this.airDate = airDate;
-        }
-
-        public int getEpisodeCount() {
-            return episodeCount;
-        }
-
-        public void setEpisodeCount(int episodeCount) {
-            this.episodeCount = episodeCount;
-        }
-
-        public String getPosterPath() {
-            return posterPath;
-        }
-
-        public void setPosterPath(String posterPath) {
-            this.posterPath = posterPath;
-        }
-
-        public int getSeasonNumber() {
-            return seasonNumber;
-        }
-
-        public void setSeasonNumber(int seasonNumber) {
-            this.seasonNumber = seasonNumber;
-        }
-
-        public double getVoteAverage() {
-            return voteAverage;
-        }
-
-        public void setVoteAverage(double voteAverage) {
-            this.voteAverage = voteAverage;
         }
 
     }

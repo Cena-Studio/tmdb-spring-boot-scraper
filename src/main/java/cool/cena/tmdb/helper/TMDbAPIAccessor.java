@@ -53,90 +53,162 @@ public class TMDbAPIAccessor {
     }
 
     public static SearchTVSeriesResponseBody searchTVSeries(String title, int year) {
-        String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/search/tv")
-            .queryParam("query", title)
-            .queryParam("language", "zh-CN")
-            .queryParam("first_air_date_year", year)
-            .encode()
-            .toUriString();
-        HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
-        ResponseEntity<SearchTVSeriesResponseBody> responseEntity = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            requestEntity,
-            SearchTVSeriesResponseBody.class
-        );
-        return responseEntity.getBody();
+        for (int attempt = 0; attempt < 3; attempt++) {
+            try {
+                String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/search/tv")
+                        .queryParam("query", title)
+                        .queryParam("language", "zh-CN")
+                        .queryParam("first_air_date_year", year)
+                        .encode()
+                        .toUriString();
+                HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
+                ResponseEntity<SearchTVSeriesResponseBody> responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    requestEntity,
+                    SearchTVSeriesResponseBody.class
+                );
+                return responseEntity.getBody();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public static TvSeriesDetailsResponseBody getTvSeriesDetails(long id) {
-        String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/tv/" + id)
-            .queryParam("append_to_response", "content_ratings,credits")
-            .queryParam("language", "zh-CN")
-            .encode()
-            .toUriString();
-        HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
-        ResponseEntity<TvSeriesDetailsResponseBody> responseEntity = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            requestEntity,
-            TvSeriesDetailsResponseBody.class
-        );
-        return responseEntity.getBody();
+        for (int attempt = 0; attempt < 3; attempt++) {
+            try {
+                String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/tv/" + id)
+                        .queryParam("append_to_response", "content_ratings,credits")
+                        .queryParam("language", "zh-CN")
+                        .encode()
+                        .toUriString();
+                HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
+                ResponseEntity<TvSeriesDetailsResponseBody> responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    requestEntity,
+                    TvSeriesDetailsResponseBody.class
+                );
+                return responseEntity.getBody();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public static EpisodeDetailsResponseBody getEpisodeDetails(long tvSeriesId, int season, int episode) {
-        String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/tv/" + tvSeriesId + "/season/" + season + "/episode/" + episode)
-            .queryParam("language", "zh-CN")
-            .encode()
-            .toUriString();
-        HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
-        ResponseEntity<EpisodeDetailsResponseBody> responseEntity = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            requestEntity,
-            EpisodeDetailsResponseBody.class
-        );
-        return responseEntity.getBody();
+        for (int attempt = 0; attempt < 3; attempt++) {
+            try {
+                String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/tv/" + tvSeriesId + "/season/" + season + "/episode/" + episode)
+                        .queryParam("language", "zh-CN")
+                        .encode()
+                        .toUriString();
+                HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
+                ResponseEntity<EpisodeDetailsResponseBody> responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    requestEntity,
+                    EpisodeDetailsResponseBody.class
+                );
+                return responseEntity.getBody();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public static SearchMovieResponseBody searchMovie(String title, int year) {
-        String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/search/movie")
-            .queryParam("query", title)
-            .queryParam("include_adult", true)
-            .queryParam("language", "zh-CN")
-            .queryParam("primary_release_year", year)
-            .encode()
-            .toUriString();
-        HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
-        ResponseEntity<SearchMovieResponseBody> responseEntity = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            requestEntity,
-            SearchMovieResponseBody.class
-        );
-        return responseEntity.getBody();
+        for (int attempt = 0; attempt < 3; attempt++) {
+            try {
+                String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/search/movie")
+                        .queryParam("query", title)
+                        .queryParam("include_adult", true)
+                        .queryParam("language", "zh-CN")
+                        .queryParam("primary_release_year", year)
+                        .encode()
+                        .toUriString();
+                HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
+                ResponseEntity<SearchMovieResponseBody> responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    requestEntity,
+                    SearchMovieResponseBody.class
+                );
+                return responseEntity.getBody();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public static MovieDetailsResponseBody getMovieDetails(long id) {
-        String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/movie/" + id)
-            .queryParam("append_to_response", "release_dates,credits")
-            .queryParam("language", "zh-CN")
-            .encode()
-            .toUriString();
-        HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
-        ResponseEntity<MovieDetailsResponseBody> responseEntity = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            requestEntity,
-            MovieDetailsResponseBody.class
-        );
-        return responseEntity.getBody();
+        for (int attempt = 0; attempt < 3; attempt++) {
+            try {
+                String url = UriComponentsBuilder.fromUriString( "https://api.themoviedb.org/3/movie/" + id)
+                        .queryParam("append_to_response", "release_dates,credits")
+                        .queryParam("language", "zh-CN")
+                        .encode()
+                        .toUriString();
+                HttpEntity<String> requestEntity = new HttpEntity<>(HTTP_JSON_HEADERS);
+                ResponseEntity<MovieDetailsResponseBody> responseEntity = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    requestEntity,
+                    MovieDetailsResponseBody.class
+                );
+                return responseEntity.getBody();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public static byte[] downloadFileAsBytes(String url) {
-        ResponseEntity<byte[]> responseEntity =  restTemplate.getForEntity(url, byte[].class);
-        return responseEntity.getBody();
+        for (int attempt = 0; attempt < 3; attempt++) {
+            try {
+                ResponseEntity<byte[]> responseEntity =  restTemplate.getForEntity(url, byte[].class);
+                return responseEntity.getBody();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
 }
